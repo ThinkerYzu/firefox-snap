@@ -1,0 +1,33 @@
+name: Test langpack installation
+
+on:
+  # Allow running manually for testing
+  workflow_dispatch:
+  # Run on pull requests that modify langpack-related files
+  pull_request:
+    paths:
+      - 'snapcraft.yaml'
+      - '.github/scripts/test-langpack-installation.*'
+      - '.github/workflows/test-langpack-installation.yml'
+
+jobs:
+  test-langpack-structure:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: build-snap
+
+      - name: Install snap
+        run: |
+          sudo snap install --dangerous ${{ steps.build-snap.outputs.snap }}
+
+      - name: Run langpack installation tests (shell)
+        run: |
+          ./.github/scripts/test-langpack-installation.sh /snap/firefox/current
+
+      - name: Run langpack installation tests (python)
+        run: |
+          python3 ./.github/scripts/test-langpack-installation.py /snap/firefox/current
