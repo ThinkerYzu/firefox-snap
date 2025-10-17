@@ -24,10 +24,6 @@ jobs:
         run: |
           sudo snap install --dangerous ${{ steps.build-snap.outputs.snap }}
 
-      - name: Run langpack installation tests (shell)
-        run: |
-          ./.github/scripts/test-langpack-installation.sh /snap/firefox/current
-
-      - name: Run langpack installation tests (python)
+      - name: Run langpack installation tests
         run: |
           python3 ./.github/scripts/test-langpack-installation.py /snap/firefox/current

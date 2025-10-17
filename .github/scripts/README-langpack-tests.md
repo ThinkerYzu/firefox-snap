@@ -31,30 +31,11 @@ Right: /distribution/extensions/locale-fr/langpack-fr@firefox.mozilla.org.xpi
 
 **The Fix**: Changed to `basename $XPI .xpi` in snapcraft.yaml line 548.
 
-## Test Scripts
+## Test Script
 
-### 1. `test-langpack-installation.sh` (Shell Script)
+### `test-langpack-installation.py` (Python Script)
 
-Fast, lightweight test that checks filesystem structure.
-
-**Usage:**
-```bash
-# Test installed snap
-./.github/scripts/test-langpack-installation.sh
-
-# Test custom snap directory
-./.github/scripts/test-langpack-installation.sh /path/to/snap/mount
-```
-
-**What it checks:**
-- ✅ Directory names are `locale-LANGCODE` (no `.xpi` suffix)
-- ✅ File names are `langpack-LANGCODE@firefox.mozilla.org.xpi`
-- ✅ No directories with `.xpi` suffix exist (Bug 1994920 regression check)
-- ✅ Addon IDs extracted from filenames are correct format
-
-### 2. `test-langpack-installation.py` (Python Script)
-
-Comprehensive test that also validates XPI contents.
+Comprehensive test that validates both filesystem structure and XPI contents.
 
 **Usage:**
 ```bash
@@ -66,7 +47,9 @@ python3 ./.github/scripts/test-langpack-installation.py /path/to/snap/mount
 ```
 
 **What it checks:**
-- All checks from the shell script, plus:
+- ✅ Directory names are `locale-LANGCODE` (no `.xpi` suffix)
+- ✅ File names are `langpack-LANGCODE@firefox.mozilla.org.xpi`
+- ✅ No directories with `.xpi` suffix exist (Bug 1994920 regression check)
 - ✅ XPI files are valid ZIP archives
 - ✅ `manifest.json` exists and is valid JSON
 - ✅ Addon ID in manifest matches expected ID from filename

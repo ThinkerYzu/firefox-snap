@@ -1,0 +1,34 @@
+name: Manual langpack test
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_build:
+        description: 'Skip snap build (for testing scripts only)'
+        required: false
+        default: 'false'
+
+jobs:
+  test-langpack:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build snap
+        if: ${{ github.event.inputs.skip_build != 'true' }}
+        uses: snapcore/action-build@v1
+        id: build-snap
+
+      - name: Install snap
+        if: ${{ github.event.inputs.skip_build != 'true' }}
+        run: |
+          sudo snap install --dangerous ${{ steps.build-snap.outputs.snap }}
+
+      - name: Install latest stable snap (for script testing)
+        if: ${{ github.event.inputs.skip_build == 'true' }}
+        run: |
+          sudo snap install firefox --channel=stable
+
+      - name: Run langpack installation tests
+        run: |
+          python3 ./.github/scripts/test-langpack-installation.py /snap/firefox/current
